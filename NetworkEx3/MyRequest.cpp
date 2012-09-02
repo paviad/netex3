@@ -4,6 +4,7 @@
 using namespace std;
 
 unordered_set<string> MyRequest::allowedMethods;
+unordered_set<string> MyRequest::commentedHeaders;
 char MyRequest::invalidPathChars[] = "<>:\"/\\|?*";
 
 MyRequest::__initializer MyRequest::__initializerInstance;
@@ -15,15 +16,17 @@ MyRequest::__initializer::__initializer()
     allowedMethods.emplace("HEAD");
     allowedMethods.emplace("DELETE");
     allowedMethods.emplace("TRACE");
+
+    commentedHeaders.emplace("Server");
+    commentedHeaders.emplace("User-Agent");
+    commentedHeaders.emplace("Via");
 }
 
-void MyRequest::ProcessHeader(string hdr)
+void MyRequest::ProcessHeader(string &hdr, string &value)
 {
-    string contentLengthHeaderField = "Content-Length: ";
-    int l = contentLengthHeaderField.length();
-    if(hdr.substr(0, l) == contentLengthHeaderField) {
-        contentLength = atoi(hdr.substr(l).c_str());
-    }
+    cout << ">>> " << hdr << ": " << value << endl;
+    if(hdr == "Content-Length") 
+        contentLength = atoi(value.c_str());
 }
 
 #ifdef USE_EXTERNAL_HTTP_PARSER
@@ -41,7 +44,7 @@ void MyRequest::OnMessageComplete(http_parser *parser)
     char tmp[20];
     sprintf(tmp, "HTTP/%d.%d", parser->http_major, parser->http_minor);
     httpVersion = tmp;
-    CheckURL();
+    CheckURL(true);
     CheckMethod();
     CheckHTTPVersion();
     valid = urlValid && httpVersionValid && methodValid;
@@ -77,7 +80,7 @@ int on_body_received(http_parser *parser, const char *at, size_t length)
 void MyRequest::OnBodyReceived(http_parser *parser, const char *at, size_t length)
 {
     if(!tmpHeader.empty()) {
-        ProcessHeader(tmpHeader + ": " + tmpHeaderValue);
+        ProcessHeader(tmpHeader, trim(tmpHeaderValue));
         tmpHeader.clear();
         tmpHeaderValue.clear();
     }

@@ -80,9 +80,12 @@
     <ClCompile Include="..\http-parser\http_parser.c" />
     <ClCompile Include="MyException.cpp" />
     <ClCompile Include="MyRequest.cpp" />
+    <ClCompile Include="MyRequestLexer.cpp" />
+    <ClCompile Include="MyRequestParser.cpp" />
     <ClCompile Include="MyResponse.cpp" />
     <ClCompile Include="MySocket.cpp" />
     <ClCompile Include="MyWebServer.cpp" />
+    <ClCompile Include="trim.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\http-parser\http_parser.h" />

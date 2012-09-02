@@ -33,6 +33,15 @@
     <ClCompile Include="MyRequest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="trim.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyRequestLexer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyRequestParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MySocket.h">

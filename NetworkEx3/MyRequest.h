@@ -6,6 +6,7 @@
 #ifdef USE_EXTERNAL_HTTP_PARSER
 #include "..\http-parser\http_parser.h"
 #endif
+#include "trim.h"
 
 using namespace std;
 
@@ -14,6 +15,7 @@ private:
     int state;
 
     static unordered_set<string> allowedMethods;
+    static unordered_set<string> commentedHeaders;
     static char invalidPathChars[];
 
     static class __initializer {
@@ -64,36 +66,37 @@ private:
         methodValid = allowedMethods.find(method) != allowedMethods.end();
     }
 
-    void CheckURL() {
-        // First, decode the URL by handling "%xx" (xx = two digit hex number), and "+" occurrences.
-        string newurl;
-        char hex[3] = { '\0' };
-        int tmp = 0;
-        for(string::iterator it = url.begin(); it != url.end(); ++it) {
-            if(tmp == 0 && *it == '+') newurl.push_back(' ');
-            else if(tmp == 0 && *it != '%') newurl.push_back(*it);
-            else if(tmp == 0 && *it == '%') tmp = 1;
-            else if(tmp == 1 && isxdigit(*it)) {
-                hex[0] = *it;
-                tmp = 2;
+    void CheckURL(bool decode = false) {
+        if(decode) {
+            // First, decode the URL by handling "%xx" (xx = two digit hex number), and "+" occurrences.
+            string newurl;
+            char hex[3] = { '\0' };
+            int tmp = 0;
+            for(string::iterator it = url.begin(); it != url.end(); ++it) {
+                if(tmp == 0 && *it == '+') newurl.push_back(' ');
+                else if(tmp == 0 && *it != '%') newurl.push_back(*it);
+                else if(tmp == 0 && *it == '%') tmp = 1;
+                else if(tmp == 1 && isxdigit(*it)) {
+                    hex[0] = *it;
+                    tmp = 2;
+                }
+                else if(tmp == 1 && *it == '%') {
+                    newurl.push_back('%');
+                    tmp = 0;
+                }
+                else if(tmp == 2 && isxdigit(*it)) {
+                    hex[1] = *it;
+                    char newch = strtol(hex, NULL, 16);
+                    newurl.push_back(newch);
+                    tmp = 0;
+                }
+                else return;
             }
-            else if(tmp == 1 && *it == '%') {
-                newurl.push_back('%');
-                tmp = 0;
+            if(tmp == 0) {
+                url = newurl;
             }
-            else if(tmp == 2 && isxdigit(*it)) {
-                hex[1] = *it;
-                char newch = strtol(hex, NULL, 16);
-                newurl.push_back(newch);
-                tmp = 0;
-            }
-            else return;
         }
-        if(tmp == 0) {
-            url = newurl;
-            // We support only relative URLs
-            if(url[0] == '/') urlValid = true;
-        }
+        if(url[0] == '/') urlValid = true;
     }
 
     void CheckHTTPVersion() {
@@ -101,12 +104,97 @@ private:
         if(httpVersion != "HTTP/1.1") return;
         httpVersionValid = true;
     }
+private:
+    bool commentsEnabled;
+    bool quotedStringsEnabled;
+    bool parseURLEnabled;
+    bool foldingEnabled;
+    bool opaqueEnabled;
 
+    enum {
+        LEXER_init,
+        LEXER_cr_read,
+        LEXER_newline_read,
+        LEXER_LWS_read,
+        LEXER_LWS_cr_read,
+        LEXER_LWS_newline_read,
+        LEXER_quoted_string,
+        LEXER_quoted_pair,
+        LEXER_comment,
+        LEXER_quoted_pair_comment,
+        LEXER_url,
+        LEXER_url_encoded_1,
+        LEXER_url_encoded_2,
+        LEXER_opaque,
+        LEXER_opaque_cr_read,
+        LEXER_opaque_newline_read,
+
+        LEXER_error,
+
+        LEXER_quoted_string_text_error,
+        LEXER_comment_text_error,
+        LEXER_token_text_error,
+        LEXER_url_error,
+    } lexerState;
+
+    string lexerQuotedString;
+    string lexerComment;
+    int lexerCommentNesting;
+    string lexerToken;
+    string lexerUrl;
+    string lexerOpaqueString;
+    char lexerTmpHex[3];
+
+    enum TOKEN {
+        TOK_token,
+        TOK_separator,
+        TOK_newline,
+        TOK_cr,
+        TOK_lf,
+        TOK_lws,
+        TOK_qstring,
+        TOK_comment,
+        TOK_url,
+        TOK_opaque
+    };
+
+    enum {
+        PARSER_init, // initial state
+        PARSER_url, // after reading method, before reading url
+        PARSER_version, // after reading url, before reading http version
+        PARSER_version_slash, // after reading the HTTP part of the http version, before reading the '/'
+        PARSER_version_major_minor, // after reading the '/' part of the http version, before reading the number
+        PARSER_version_ok, // after reading the http version completely, expecting LWS or newline.
+        PARSER_header, // before header, expect a token, or a newline signifying the end of the request header.
+        PARSER_header_colon, // after eading header field, before reading the ':' separator
+        PARSER_header_value, // after reading the ':' separator, before reading a field's opaque value
+        PARSER_header_commented_value, // after reading the ':' separator, before reading a field's commented value
+        PARSER_header_commented_separator, // after reading a separator in a commented field value
+        PARSER_header_done, // after reading a complete header field and value
+        PARSER_body,
+
+        PARSER_error,
+
+        PARSER_method_error,
+        PARSER_url_error,
+        PARSER_version_error,
+        PARSER_bad_request_error,
+        PARSER_header_error,
+    } parserState;
+
+    string parserElement;
 public:
     MyRequest() {
         state = 0;
         contentLength = 0;
         done = aborted = httpVersionValid = methodValid = urlValid = valid = false;
+
+        commentsEnabled = quotedStringsEnabled = parseURLEnabled = foldingEnabled = opaqueEnabled = false;
+        lexerState = LEXER_init;
+        lexerCommentNesting = 0;
+        lexerTmpHex[2] = '\0';
+
+        parserState = PARSER_init;
 #ifdef USE_EXTERNAL_HTTP_PARSER
         http_parser_init(&parser, http_parser_type::HTTP_REQUEST);
         parser.data = (void*)this;
@@ -120,147 +208,41 @@ public:
     }
 
     void AppendData(char *buf, int length) {
-        vector<char> newData;
         int newLength = length;
         if(data.size() + newLength > contentLength) {
             aborted = true;
         }
         else {
-            newData.assign(buf, buf + newLength);
-            data.insert(data.end(), newData.begin(), newData.end());
+            data.insert(data.end(), buf, buf + length);
             if(data.size() == contentLength)
                 done = true;
         }
     }
 
     void ParseChunk(char *buf, int length) {
-#ifdef USE_EXTERNAL_HTTP_PARSER
-        http_parser_execute(&parser, &settings, buf, length);
-        if(parser.http_errno != http_errno::HPE_OK) {
-            http_errno e = (http_errno)parser.http_errno;
-            urlValid = methodValid = httpVersionValid = true;
-            if(e == http_errno::HPE_INVALID_URL) urlValid = false;
-            if(e == http_errno::HPE_INVALID_METHOD) methodValid = false;
-            if(e == http_errno::HPE_INVALID_VERSION) httpVersionValid = false;
-            aborted = true;
-        }
-#else
-        if(length == 0) {
-            return;
-        }
-        if(state == 999) { // Just append the data
-            AppendData(buf, length);
-            return;
-        }
-        for(int i = 0; i < length; i++) {
-            char ch = buf[i];
-            rawHeader.push_back(ch);
-            again:
-            switch(state) {
-            case 0: // expect method
-                if(!isupper(ch)) state = -1; // any non upper case character is illegal here, terminate.
-                else {
-                    state = 1;
-                    goto again;
-                }
-                break;
-            case 1: // read method, expect whitespace
-                if(ch == '\r' || ch == '\n') state = -1; // new line is illegal here, terminate.
-                else if(isspace(ch)) {
-                    CheckMethod();
-                    if(methodValid) state = 2;
-                    else state = -1; // illegal method received, terminate
-                }
-                else method.push_back(ch);
-                break;
-            case 2: // eat whitespace, expect non-whitespace
-                if(ch == '\r' || ch == '\n') state = -1; // new line is illegal here, terminate.
-                else if(!isspace(ch)) {
-                    state = 3;
-                    goto again;
-                }
-                break;
-            case 3: // read url, expect whitespace
-                if(ch == '\r' || ch == '\n') state = -1; // new line is illegal here, terminate.
-                else if(isspace(ch)) {
-                    CheckURL();
-                    if(urlValid) state = 4;
-                    else state = -1; // illegal url received, terminate
-                }
-                else url.push_back(ch);
-                break;
-            case 4: // eat whitespace, expect http version
-                if(ch == '\r' || ch == '\n') state = -1; // new line is illegal here, terminate.
-                else if(!isspace(ch)) {
-                    state = 5;
-                    goto again;
-                }
-                break;
-            case 5: // read http version, expect whitespace or newline
-                if(ch == '\r') state = 1005; // new line means we're past the first line, start parsing headers.
-                else if(ch == '\n') state = -1; // lf here is illegal.
-                else if(isspace(ch)) {
-                    CheckHTTPVersion();
-                    if(httpVersionValid) state = 6;
-                    else state = -1; // illegal HTTP version received, terminate.
-                }
-                else httpVersion.push_back(ch);
-                break;
-            case 1005: // expect \n
-                if(ch != '\n') state = -1; // always expect \n after \r, otherwise terminate.
-                else {
-                    CheckHTTPVersion();
-                    if(httpVersionValid) state = 7;
-                    else state = -1; // illegal HTTP version received, terminate.
-                }
-                break;
-            case 6: // eat whitespace, expect newline
-                if(ch == '\r') state = 1005; // new line means we're now in the headers section.
-                else if(ch == '\n') state = -1; // lf here is illegal, terminate.
-                else if(!isspace(ch)) state = -1; // any non-whitespace character is illegal here, terminate.
-                break;
-            case 7: // expect header or empty line.
-                if(ch == '\r') state = 1007;
-                else if(ch == '\n') state = -1; // lf here is illegal, terminate.
-                else {
-                    if(!tmpHeader.empty() && isspace(ch)) tmpHeader.push_back(' '); // folding
-                    else if(!tmpHeader.empty()) {
-                        ProcessHeader(tmpHeader);
-                        tmpHeader.clear();
-                    }
-                    state = 8;
-                    goto again;
-                }
-                break;
-            case 1007: // expect \n
-                if(ch != '\n') state = -1; // always expect \n after \r, otherwise terminate.
-                else {
-                    if(!tmpHeader.empty()) ProcessHeader(tmpHeader);
-                    state = 999; // empty header line, request header ended.
-                }
-                break;
-            case 8: // eat header line, expect newline
-                if(ch == '\r') state = 1008;
-                else if(ch == '\n') state = -1; // lf here is illegal, terminate.
-                else tmpHeader.push_back(ch);
-                break;
-            case 1008: // expect \n
-                if(ch != '\n') state = -1; // always expect \n after \r, otherwise terminate.
-                else state = 7;
-                break;
-            case 999:
-                valid = true;
-                AppendData(buf + i, length - i);
-                return;
-            }
-        }
-        if(state == 999) {
-            valid = true;
-            if(contentLength == 0) done = true;
-        }
-        if(state == -1) aborted = true;
-#endif
+        Lexer(buf, length);
     }
 
-    void ProcessHeader(string hdr);
+    void ProcessHeader(string &hdr, string &value);
+
+    bool isseparator(char ch);
+    bool isctl(char ch);
+    bool istext(char ch);
+
+    void Lexer(char *buf, int length);
+
+    bool IsHeaderOpaque(string &hdr);
+    void ProcessTokenIfAvailable();
+    void ProcessToken(string &str);
+    void ProcessSeparator(char ch);
+    void ProcessNewline();
+    void ProcessCR();
+    void ProcessLF();
+    void ProcessLWS();
+    void ProcessQuotedString(string &str);
+    void ProcessComment(string &str);
+    void ProcessURL(string &str);
+    void ProcessOpaque(string &str);
+
+    void Parse(TOKEN tok);
 };

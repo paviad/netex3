@@ -172,13 +172,13 @@ void MySocket::HandleBadRequest()
     if(!request.methodValid) {
         response.code = 501;
         response.responseText = "Not Implemented";
-        content = "<h1>Method Not Implemented</h1>";
+        content = "<h1>Method Not Implemented (" + request.method + ")</h1>";
     }
-    else if(!request.urlValid) content = "<h1>Bad Request (Invalid URL)</h1>";
+    else if(!request.urlValid) content = "<h1>Bad Request (Invalid URL: '" + request.url + "')</h1>";
     else if(!request.httpVersionValid) {
         response.code = 505;
         response.responseText = "HTTP Version Not Supported";
-        content = "<h1>HTTP Version Not Supported</h1>";
+        content = "<h1>HTTP Version Not Supported (" + request.httpVersion + ")</h1>";
     }
     else content = "<h1>Bad Request (Malformed Request)</h1>";
 
