@@ -3,6 +3,9 @@
 #include <string>
 #include <cctype>
 #include <unordered_set>
+#ifdef USE_EXTERNAL_HTTP_PARSER
+#include "..\http-parser\http_parser.h"
+#endif
 
 using namespace std;
 
@@ -19,6 +22,11 @@ private:
     };
     static __initializer __initializerInstance;
 
+#ifdef USE_EXTERNAL_HTTP_PARSER
+    http_parser_settings settings;
+    http_parser parser;
+#endif
+
 public:
     bool methodValid;
     string method;
@@ -34,6 +42,22 @@ public:
     string rawHeader;
 
     string tmpHeader;
+    string tmpHeaderValue;
+
+#ifdef USE_EXTERNAL_HTTP_PARSER
+private:
+    friend int on_url_received(http_parser *parser, const char *at, size_t length);
+    friend int on_body_received(http_parser *parser, const char *at, size_t length);
+    friend int on_header_field_received(http_parser *parser, const char *at, size_t length);
+    friend int on_header_value_received(http_parser *parser, const char *at, size_t length);
+    friend int on_message_complete(http_parser *parser);
+
+    void OnURLReceived(http_parser *parser, const char *at, size_t length);
+    void OnBodyReceived(http_parser *parser, const char *at, size_t length);
+    void OnHeaderFieldReceived(http_parser *parser, const char *at, size_t length);
+    void OnHeaderValueReceived(http_parser *parser, const char *at, size_t length);
+    void OnMessageComplete(http_parser *parser);
+#endif
 
 private:
     void CheckMethod() {
@@ -67,7 +91,8 @@ private:
         }
         if(tmp == 0) {
             url = newurl;
-            urlValid = true;
+            // We support only relative URLs
+            if(url[0] == '/') urlValid = true;
         }
     }
 
@@ -82,6 +107,16 @@ public:
         state = 0;
         contentLength = 0;
         done = aborted = httpVersionValid = methodValid = urlValid = valid = false;
+#ifdef USE_EXTERNAL_HTTP_PARSER
+        http_parser_init(&parser, http_parser_type::HTTP_REQUEST);
+        parser.data = (void*)this;
+        memset(&settings, 0, sizeof(settings));
+        settings.on_url = on_url_received;
+        settings.on_message_complete = on_message_complete;
+        settings.on_body = on_body_received;
+        settings.on_header_field = on_header_field_received;
+        settings.on_header_value = on_header_value_received;
+#endif
     }
 
     void AppendData(char *buf, int length) {
@@ -99,6 +134,17 @@ public:
     }
 
     void ParseChunk(char *buf, int length) {
+#ifdef USE_EXTERNAL_HTTP_PARSER
+        http_parser_execute(&parser, &settings, buf, length);
+        if(parser.http_errno != http_errno::HPE_OK) {
+            http_errno e = (http_errno)parser.http_errno;
+            urlValid = methodValid = httpVersionValid = true;
+            if(e == http_errno::HPE_INVALID_URL) urlValid = false;
+            if(e == http_errno::HPE_INVALID_METHOD) methodValid = false;
+            if(e == http_errno::HPE_INVALID_VERSION) httpVersionValid = false;
+            aborted = true;
+        }
+#else
         if(length == 0) {
             return;
         }
@@ -213,6 +259,7 @@ public:
             if(contentLength == 0) done = true;
         }
         if(state == -1) aborted = true;
+#endif
     }
 
     void ProcessHeader(string hdr);

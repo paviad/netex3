@@ -3,9 +3,6 @@
 #include <WinSock2.h>
 #include "MyException.h"
 #include <unordered_set>
-#ifdef USE_EXTERNAL_HTTP_PARSER
-#include "..\http-parser\http_parser.h"
-#endif
 #include "MyRequest.h"
 #include "MyResponse.h"
 
@@ -31,11 +28,6 @@ private:
     string entityFileExtension;
     bool entityFileExists;
     long long entityFileSize;
-
-#ifdef USE_EXTERNAL_HTTP_PARSER
-    http_parser_settings settings;
-    http_parser parser;
-#endif
 
     MyRequest request;
     MyResponse response;
@@ -65,14 +57,6 @@ private:
     static void MarkForDeletion(MySocket *e) {
         todelete.push_back(e);
     }
-
-#ifdef USE_EXTERNAL_HTTP_PARSER
-    friend static int on_url_received(http_parser *parser, const char *at, size_t length);
-    friend static int on_message_complete(http_parser *parser);
-
-    void OnURLReceived(http_parser *parser, const char *at, size_t length);
-    void OnMessageComplete(http_parser *parser);
-#endif
 
     bool CheckPath();
     void HandleBadRequest();

@@ -29,13 +29,6 @@ MySocket::MySocket(SOCKET s, bool listener)
     }
     else {
         state = SocketState::REQUEST;
-#ifdef USE_EXTERNAL_HTTP_PARSER
-        http_parser_init(&parser, http_parser_type::HTTP_REQUEST);
-        parser.data = (void*)this;
-        memset(&settings, 0, sizeof(settings));
-        settings.on_url = on_url_received;
-        settings.on_message_complete = on_message_complete;
-#endif
     }
 }
 
@@ -75,39 +68,6 @@ void MySocket::Accept()
     new MySocket(msgSocket, false);
 }
 
-#ifdef USE_EXTERNAL_HTTP_PARSER
-static int on_message_complete(http_parser *parser)
-{
-    MySocket *e = (MySocket*)parser->data;
-    e->OnMessageComplete(parser);
-    return 0;
-}
-
-void MySocket::OnMessageComplete(http_parser *parser)
-{
-    http_method method = (http_method)parser->method;
-    cout << "Method: " << http_method_str(method) << endl;
-    cout << "HTTP Version: " << parser->http_major << "." << parser->http_minor << endl;
-    cout << "URL: " << requestURL << endl;
-    state = SocketState::REPLY;
-    cout << "Request complete" << endl;
-
-    if(method == http_method::HTTP_PURGE) purgeReceived = true;
-}
-
-static int on_url_received(http_parser *parser, const char *at, size_t length)
-{
-    MySocket *e = (MySocket*)parser->data;
-    e->OnURLReceived(parser, at, length);
-    return 0;
-}
-
-void MySocket::OnURLReceived(http_parser *parser, const char *at, size_t length)
-{
-    requestURL.append(at, length);
-}
-#endif
-
 void MySocket::Receive()
 {
     SOCKET msgSocket = socketId;
@@ -120,20 +80,15 @@ void MySocket::Receive()
         throw MyException(CallType::WSA, "recv in Receive", false);
 
     buf[recvLen] = '\0';
-    //http_parser_execute(&parser, &settings, buf, recvLen);
     request.ParseChunk(buf, recvLen);
     if(request.done) {
         requestURL = request.url;
         state = SocketState::REPLY;
         cout << request.rawHeader;
-        //cout << "Request " << request.method << " " << request.url << " " << request.httpVersion << endl;
     }
     else if(recvLen == 0 || request.aborted) {
         state = SocketState::REPLY;
     }
-    //if(recvLen == 0 && state != SocketState::REPLY) {
-    //    MarkForDeletion(this);
-    //}
     return;
 }
 

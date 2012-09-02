@@ -51,7 +51,4 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="my.targets.xml" />
-  </ItemGroup>
 </Project>

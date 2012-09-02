@@ -189,7 +189,7 @@ bool Test17()
 
 bool Test18()
 {
-    string request = "GET ../lala.htm HTTP/1.1\r\n\r\n";
+    string request = "GET /../lala.htm HTTP/1.1\r\n\r\n";
     string expected = "HTTP/1.1 403 Forbidden\r\n";
     
     return PerformTest("Test18", request, expected);
@@ -197,7 +197,7 @@ bool Test18()
 
 bool Test19()
 {
-    string request = "GET ex03.doc HTTP/1.1\r\n\r\n";
+    string request = "GET /ex03.doc HTTP/1.1\r\n\r\n";
     string expected = "HTTP/1.1 200 OK\r\n";
     
     return PerformTest("Test19", request, expected);
