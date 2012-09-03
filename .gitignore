@@ -30,4 +30,4 @@ _ReSharper*/
 *.sdf
 *.opensdf
 ipch/
-wwwroot/
+*/wwwroot/d/
