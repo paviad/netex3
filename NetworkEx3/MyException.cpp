@@ -3,16 +3,18 @@
 #include <string.h>
 #include <errno.h>
 #include <iostream>
+#include "util.h"
+#include "trim.h"
 
 using namespace std;
 
-MyException::MyException(CallType callType, char *contextMsg, bool fatal) 
-    : callType(callType), fatal(fatal)
+MyException::MyException(CallType callType, const string &contextMsg, bool fatal, int id)
+    : callType(callType), fatal(fatal), id(id)
 {
     this->contextMsg = contextMsg;
     switch(callType) {
     case CallType::STDC:
-        errorMsg = strerror(errno);
+        errorMsg = trim(strerror(errno), " \t\n\r");
         break;
     case CallType::WSA:
         FillWSAErrorMessage();
@@ -40,11 +42,13 @@ void MyException::FillWSAErrorMessage()
             tmp,
             sizeof(tmp),
             0);
-        errorMsg = tmp;
+        errorMsg = trim(tmp, " \t\n\r");
     }
 }
 
 void MyException::Print()
 {
-    cerr << "Error: " << contextMsg << " - " << errorMsg << endl;
+    Highlight(2);
+    cerr << id << " Error: " << contextMsg << " - " << errorMsg << endl;
+    Highlight(0);
 }

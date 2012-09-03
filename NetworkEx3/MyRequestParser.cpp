@@ -68,6 +68,7 @@ void MyRequest::Parse(TOKEN tok) {
             CheckMethod();
             if(!methodValid) parserState = PARSER_method_error;
             else {
+                //cout << socketId << " >>> " << method << endl;
                 parseURLEnabled = true;
                 parserState = PARSER_url;
             }
@@ -80,7 +81,10 @@ void MyRequest::Parse(TOKEN tok) {
             url = parserElement;
             CheckURL();
             if(!urlValid) parserState = PARSER_url_error;
-            else parserState = PARSER_version;
+            else {
+                //cout << socketId << " >>> " << url << endl;
+                parserState = PARSER_version;
+            }
         }
         else if(tok != TOK_lws) parserState = PARSER_url_error;
         break;
@@ -154,9 +158,11 @@ void MyRequest::Parse(TOKEN tok) {
             tmpHeaderValue.append(parserElement);
         }
         else if(tok == TOK_separator) {
-            tmpHeaderValue = trim(tmpHeaderValue);
+            if(parserElement == ",") {
+                tmpHeaderValue = trim(tmpHeaderValue);
+                parserState = PARSER_header_commented_separator;
+            }
             tmpHeaderValue.append(parserElement);
-            parserState = PARSER_header_commented_separator;
         }
         else if(tok == TOK_qstring) {
             tmpHeaderValue.append(parserElement);
@@ -169,7 +175,7 @@ void MyRequest::Parse(TOKEN tok) {
                 tmpHeaderValue.push_back(' ');
         }
         else if(tok == TOK_comment)
-            ;
+            tmpHeaderValue.append(parserElement);
         else if(tok == TOK_newline) 
         {
             foldingEnabled = false;

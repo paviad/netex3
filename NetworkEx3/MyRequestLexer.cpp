@@ -33,43 +33,33 @@ bool MyRequest::istext(char ch) {
     return !isctl(ch);
 }
 
-void MyRequest::Lexer(char *buf, int length) {
-#ifdef USE_EXTERNAL_HTTP_PARSER
-    http_parser_execute(&parser, &settings, buf, length);
-    if(parser.http_errno != http_errno::HPE_OK) {
-        http_errno e = (http_errno)parser.http_errno;
-        urlValid = methodValid = httpVersionValid = true;
-        if(e == http_errno::HPE_INVALID_URL) urlValid = false;
-        if(e == http_errno::HPE_INVALID_METHOD) methodValid = false;
-        if(e == http_errno::HPE_INVALID_VERSION) httpVersionValid = false;
-        aborted = true;
-    }
-#else
+int MyRequest::Lexer(char *buf, int length) {
+    int consumed = 0;
     if(length == 0) {
         valid = methodValid && urlValid && httpVersionValid;
         if(data.size() == contentLength)
-            done = true;
-        return;
+            done = lexerState != LEXER_init;
+        return 0;
     }
     if(parserState == PARSER_body) {
-        AppendData(buf, length);
-        return;
+        consumed = AppendData(buf, length);
+        return consumed;
     }
-    for(int i = 0; i < length; i++) {
+    for(int i = 0; i < length; i++, consumed++) {
         if(parserState == PARSER_body) {
-            AppendData(buf + i, length - i);
+            consumed += AppendData(buf + i, length - i);
             break;
         }
         char ch = buf[i];
         rawHeader.push_back(ch);
 again:
         if(parserState == PARSER_body) {
-            AppendData(buf + i, length - i);
+            consumed += AppendData(buf + i, length - i);
             break;
         }
         if(lexerState > LEXER_error) {
             aborted = true;
-            return;
+            break;
         }
         switch(lexerState) {
         case LEXER_init:
@@ -279,5 +269,5 @@ again:
         if(data.size() == contentLength)
             done = true;
     }
-#endif
+    return consumed;
 }

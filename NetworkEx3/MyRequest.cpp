@@ -22,11 +22,19 @@ MyRequest::__initializer::__initializer()
     commentedHeaders.emplace("Via");
 }
 
+static bool ieq(const string &a, const string &b) {
+    return _stricmp(a.c_str(), b.c_str()) == 0;
+}
+
 void MyRequest::ProcessHeader(string &hdr, string &value)
 {
-    cout << ">>> " << hdr << ": " << value << endl;
-    if(hdr == "Content-Length") 
+    //cout << socketId << " >>> " << hdr << ": " << value << endl;
+    if(ieq(hdr, "Content-Length")) 
         contentLength = atoi(value.c_str());
+    else if(ieq(hdr, "Connection") && ieq(value, "Keep-Alive"))
+        keepAlive = true;
+    else if(ieq(hdr, "User-Agent")) {
+    }
 }
 
 #ifdef USE_EXTERNAL_HTTP_PARSER
@@ -97,7 +105,7 @@ int on_header_field_received(http_parser *parser, const char *at, size_t length)
 void MyRequest::OnHeaderFieldReceived(http_parser *parser, const char *at, size_t length)
 {
     if(!tmpHeader.empty()) {
-        ProcessHeader(tmpHeader + ": " + tmpHeaderValue);
+        ProcessHeader(tmpHeader, tmpHeaderValue);
         tmpHeader.clear();
         tmpHeaderValue.clear();
     }

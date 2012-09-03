@@ -44,7 +44,8 @@ public:
         sprintf(headerTmp, "Date: %s GMT\r\n", dateBuf);
         rc.append(headerTmp);
 
-        rc.append("Connection: close\r\n");
+        //rc.append("Connection: close\r\n");
+        rc.append("Connection: Keep-Alive\r\n");
         sprintf(headerTmp, "Content-Length: %I64d\r\n", contentLength);
         rc.append(headerTmp);
         if(contentLength > 0) {

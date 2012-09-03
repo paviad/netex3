@@ -15,8 +15,9 @@ public:
     const bool fatal;
     string contextMsg;
     string errorMsg;
+    int id;
 
-    MyException(CallType callType, char *contextMsg, bool fatal);
+    MyException(CallType callType, const string &contextMsg, bool fatal, int id);
     ~MyException(void);
 
     void Print();

@@ -41,7 +41,9 @@ public:
     bool done;
     vector<char> data;
     int contentLength;
+    bool keepAlive;
     string rawHeader;
+    int socketId;
 
     string tmpHeader;
     string tmpHeaderValue;
@@ -185,9 +187,19 @@ private:
     string parserElement;
 public:
     MyRequest() {
+        Reset();
+    }
+
+    void Reset() {
         state = 0;
         contentLength = 0;
+        keepAlive = false;
         done = aborted = httpVersionValid = methodValid = urlValid = valid = false;
+
+        method.clear();
+        url.clear();
+        httpVersion.clear();
+        tmpHeaderValue.clear();
 
         commentsEnabled = quotedStringsEnabled = parseURLEnabled = foldingEnabled = opaqueEnabled = false;
         lexerState = LEXER_init;
@@ -207,20 +219,31 @@ public:
 #endif
     }
 
-    void AppendData(char *buf, int length) {
+    int AppendData(char *buf, int length) {
         int newLength = length;
-        if(data.size() + newLength > contentLength) {
-            aborted = true;
-        }
-        else {
-            data.insert(data.end(), buf, buf + length);
-            if(data.size() == contentLength)
-                done = true;
-        }
+        if(data.size() + newLength > contentLength)
+            newLength = contentLength - data.size();
+        data.insert(data.end(), buf, buf + newLength);
+        if(data.size() == contentLength)
+            done = true;
+        return newLength;
     }
 
-    void ParseChunk(char *buf, int length) {
-        Lexer(buf, length);
+    int ParseChunk(char *buf, int length) {
+#ifdef USE_EXTERNAL_HTTP_PARSER
+        int consumed = http_parser_execute(&parser, &settings, buf, length);
+        if(parser.http_errno != http_errno::HPE_OK) {
+            http_errno e = (http_errno)parser.http_errno;
+            urlValid = methodValid = httpVersionValid = true;
+            if(e == http_errno::HPE_INVALID_URL) urlValid = false;
+            if(e == http_errno::HPE_INVALID_METHOD) methodValid = false;
+            if(e == http_errno::HPE_INVALID_VERSION) httpVersionValid = false;
+            aborted = true;
+        }
+        return consumed;
+#else
+        return Lexer(buf, length);
+#endif
     }
 
     void ProcessHeader(string &hdr, string &value);
@@ -229,7 +252,7 @@ public:
     bool isctl(char ch);
     bool istext(char ch);
 
-    void Lexer(char *buf, int length);
+    int Lexer(char *buf, int length);
 
     bool IsHeaderOpaque(string &hdr);
     void ProcessTokenIfAvailable();

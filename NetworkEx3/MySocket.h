@@ -5,10 +5,12 @@
 #include <unordered_set>
 #include "MyRequest.h"
 #include "MyResponse.h"
+#include <queue>
 
 #define MAX_SOCKETS 20
 #define WEBSERVER_PORT 27015
 #define LISTENER_BACKLOG 5
+#define MY_TIMEOUT 120
 
 using namespace std;
 
@@ -28,7 +30,9 @@ private:
     string entityFileExtension;
     bool entityFileExists;
     long long entityFileSize;
+    time_t lastSendOrReceive;
 
+    queue<MyRequest> requestQueue;
     MyRequest request;
     MyResponse response;
 
@@ -41,7 +45,8 @@ public:
 private:
     void SendString(const char *str) {
         int l = strlen(str);
-        send(socketId, str, l, 0);
+        if(send(socketId, str, l, 0) == SOCKET_ERROR)
+            throw MyException(CallType::WSA, "send in SendString", false, socketId);
     }
 
     string CanonicalRequestedPath(bool &isInWebRoot);
@@ -75,10 +80,11 @@ public:
     }
 
     void Clear() {
+        cout << socketId << " Closing" << endl;
         MyException *myEx = NULL;
         if(closesocket(socketId) == SOCKET_ERROR)
-            throw MyException(CallType::WSA, "closesocket in Clear", false);
-    }
+            throw MyException(CallType::WSA, "closesocket in Clear", false, socketId);
+    } 
 
     static void AddAllToRecvSet(fd_set *recvSet) {
         for(unordered_set<MySocket*>::iterator pe = sockets.begin(); pe != sockets.end(); ++pe)
@@ -130,7 +136,44 @@ public:
             MySocket *e = *pe;
             if(e->IsInSet(sendSet)) {
                 try { e->Send(); }
-                catch(MyException) { MarkForDeletion(e); }
+                catch(MyException myEx) { 
+                    if(myEx.fatal) throw;
+                    else {
+                        myEx.Print();
+                        MarkForDeletion(e);
+                    }
+                }
+            }
+        }
+    }
+
+    static TIMEVAL *CalculateTimeout() {
+        time_t t = time(NULL), min = t;
+        bool anyClients = false;
+        static TIMEVAL rc;
+        for(unordered_set<MySocket*>::iterator pe = sockets.begin(); pe != sockets.end(); ++pe)
+        {
+            MySocket *e = *pe;
+            if(e->state == SocketState::LISTEN) continue;
+            anyClients = true;
+            if(e->lastSendOrReceive < min)
+                min = e->lastSendOrReceive;
+        }
+        if(!anyClients) return NULL;
+        rc.tv_sec = MY_TIMEOUT - (t - min);
+        rc.tv_usec = 0;
+        return &rc;
+    }
+
+    static void RemoveTimeoutConnections() {
+        time_t t = time(NULL);
+        for(unordered_set<MySocket*>::iterator pe = sockets.begin(); pe != sockets.end(); ++pe)
+        {
+            MySocket *e = *pe;
+            if(e->state == SocketState::LISTEN) continue;
+            if(t - e->lastSendOrReceive >= MY_TIMEOUT) {
+                cout << e->socketId << " timeout" << endl;
+                MarkForDeletion(e);
             }
         }
     }

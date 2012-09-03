@@ -6,6 +6,7 @@
 #include <streambuf>
 #include <Shlwapi.h>
 #include <iterator>
+#include "util.h"
 
 using namespace std;
 
@@ -16,16 +17,17 @@ bool MySocket::purgeReceived = false;
 MySocket::MySocket(SOCKET s, bool listener)
 {
     if(sockets.size() == MAX_SOCKETS)
-        throw MyException(CallType::MY, "No more room for sockets", false);
+        throw MyException(CallType::MY, "No more room for sockets", false, s);
     sockets.emplace(this);
     socketId = s;
+    request.socketId = socketId;
+    lastSendOrReceive = time(NULL);
     if(listener) {
         state = SocketState::LISTEN;
         sockaddr_in addr;
         int len = sizeof(addr);
         getsockname(s, (sockaddr*)&addr, &len);
-        cout << "Listening on " << inet_ntoa(addr.sin_addr) << ":" << ntohs(addr.sin_port) << endl;
-        cout << "Listener " << s << endl;
+        cout << s << " Listening on " << inet_ntoa(addr.sin_addr) << ":" << ntohs(addr.sin_port) << endl;
     }
     else {
         state = SocketState::REQUEST;
@@ -34,7 +36,6 @@ MySocket::MySocket(SOCKET s, bool listener)
 
 MySocket::~MySocket(void)
 {
-    cout << "Closing " << socketId << endl;
     sockets.erase(this);
     try { Clear(); }
     catch(MyException myEx) {
@@ -50,10 +51,9 @@ void MySocket::Accept()
 
     SOCKET msgSocket = accept(socketId, (struct sockaddr *)&from, &fromLen);
     if (INVALID_SOCKET == msgSocket)
-        throw MyException(CallType::WSA, "accept in Accept", false);
+        throw MyException(CallType::WSA, "accept in Accept", false, socketId);
 
-    cout << "Client " << inet_ntoa(from.sin_addr) << ":" << ntohs(from.sin_port) << " is connected." << endl;
-    cout << "Client " << msgSocket << endl;
+    cout << msgSocket << " Client " << inet_ntoa(from.sin_addr) << ":" << ntohs(from.sin_port) << " is connected." << endl;
 
     //
     // Set the socket to be in non-blocking mode.
@@ -61,8 +61,8 @@ void MySocket::Accept()
     unsigned long flag = 1;
     if (ioctlsocket(msgSocket, FIONBIO, &flag) != 0) {
         if(closesocket(msgSocket) == SOCKET_ERROR)
-            throw MyException(CallType::WSA, "closesocket in Accept", false);
-        throw MyException(CallType::WSA, "ioctlsocket in Accept", false);
+            throw MyException(CallType::WSA, "closesocket in Accept", false, socketId);
+        throw MyException(CallType::WSA, "ioctlsocket in Accept", false, socketId);
     }
 
     new MySocket(msgSocket, false);
@@ -70,23 +70,40 @@ void MySocket::Accept()
 
 void MySocket::Receive()
 {
-    SOCKET msgSocket = socketId;
-
     char buf[4096];
     int recvLen;
+    int consumed = 0;
 
-    recvLen = recv(msgSocket, buf, sizeof(buf) - 1, 0);
-    if(recvLen == SOCKET_ERROR)
-        throw MyException(CallType::WSA, "recv in Receive", false);
+    lastSendOrReceive = time(NULL);
+
+    recvLen = recv(socketId, buf, sizeof(buf) - 1, 0);
+    if(recvLen == SOCKET_ERROR) {
+        string msg = "recv in Receive (";
+        char tmp[30];
+        msg += itoa(socketId, tmp, 10);
+        msg += ")";
+        throw MyException(CallType::WSA, msg, false, socketId);
+    }
 
     buf[recvLen] = '\0';
-    request.ParseChunk(buf, recvLen);
-    if(request.done) {
-        requestURL = request.url;
-        state = SocketState::REPLY;
-        cout << request.rawHeader;
+again:
+    consumed += request.ParseChunk(buf + consumed, recvLen - consumed);
+    if(request.done || request.aborted) {
+        //cout << request.rawHeader;
+        requestQueue.push(request);
+        bool wasAborted = request.aborted;
+        request.Reset();
+        if(!wasAborted && consumed < recvLen) goto again;
     }
-    else if(recvLen == 0 || request.aborted) {
+    if(requestQueue.empty()) {
+        if (recvLen == 0) {
+            Highlight(1);
+            cout << socketId << " Connection closed between requests" << endl;
+            Highlight(0);
+            MarkForDeletion(this);
+        }
+    }
+    else if(requestQueue.front().done || requestQueue.front().aborted) {
         state = SocketState::REPLY;
     }
     return;
@@ -142,7 +159,7 @@ string MySocket::CanonicalRequestedPath(bool &isInWebRoot)
 
     // Clean up the request URL by converting forward slashes to backslashes, and compacting
     // multiple consecutive backslashes to one.
-    string strClean = request.url;
+    string strClean = requestQueue.front().url;
     // First make all forward slashes in this path, backslashes
     int cnt = repl(strClean, "/", "\\");
     // Now collapse all consecutive backslashes to a single one
@@ -169,18 +186,22 @@ void MySocket::HandleBadRequest()
     response.responseText = "Bad Request";
 
     string content;
-    if(!request.methodValid) {
+    if(!requestQueue.front().methodValid) {
         response.code = 501;
         response.responseText = "Not Implemented";
-        content = "<h1>Method Not Implemented (" + request.method + ")</h1>";
+        content = "<h1>Method Not Implemented (" + requestQueue.front().method + ")</h1>";
     }
-    else if(!request.urlValid) content = "<h1>Bad Request (Invalid URL: '" + request.url + "')</h1>";
-    else if(!request.httpVersionValid) {
+    else if(!requestQueue.front().urlValid) content = "<h1>Bad Request (Invalid URL: '" + requestQueue.front().url + "')</h1>";
+    else if(!requestQueue.front().httpVersionValid) {
         response.code = 505;
         response.responseText = "HTTP Version Not Supported";
-        content = "<h1>HTTP Version Not Supported (" + request.httpVersion + ")</h1>";
+        content = "<h1>HTTP Version Not Supported (" + requestQueue.front().httpVersion + ")</h1>";
     }
     else content = "<h1>Bad Request (Malformed Request)</h1>";
+
+    Highlight(1);
+    cout << socketId << " Bad request: " << response.responseText << endl;
+    Highlight(0);
 
     response.content = content;
     response.contentLength = content.length();
@@ -190,7 +211,7 @@ void MySocket::HandleTrace()
 {
     response.code = 200;
     response.responseText = "OK";
-    response.content = request.rawHeader;
+    response.content = requestQueue.front().rawHeader;
     response.contentLength = response.content.length();
     response.contentType = "text/plain";
 }
@@ -209,7 +230,7 @@ void MySocket::HandleDelete()
         response.responseText = "No Content";
     }
     else {
-        MyException myEx(CallType::WSA, "DeleteFile", false);
+        MyException myEx(CallType::WSA, "DeleteFile", false, socketId);
         response.code = 500;
         response.responseText = "Internal Server Error";
         response.content = "<h1>Internal Error (DELETE)</h1>Couldn't delete file: " + myEx.errorMsg;
@@ -237,7 +258,7 @@ void MySocket::HandlePut()
     }
     else {
         ostream_iterator<char> oi(ofst);
-        copy(request.data.begin(), request.data.end(), oi);
+        copy(requestQueue.front().data.begin(), requestQueue.front().data.end(), oi);
     }
     ofst.close();
 }
@@ -259,20 +280,21 @@ void MySocket::HandleGetHead()
         string contentType = getRegKey(entityFileExtension, "Content Type");
         response.contentType = contentType;
         response.contentLength = entityFileSize;
-        cout << response.GetResponseHeader() << endl;
+        //cout << response.GetResponseHeader() << endl;
 
         SendString(response.GetResponseHeader().c_str());
         SendString("\r\n");
 
-        if(request.method == "GET") {
+        if(requestQueue.front().method == "GET") {
             int readCount, total = 0;
             vector<char> buf(response.contentLength, 0);
             t.read(&buf[0], buf.size());
             readCount = t.gcount();
-            send(socketId, &buf[0], readCount, 0);
-            total += readCount;
-            cout << "Sent a total of " << total << " bytes" << endl;
             t.close();
+            if(send(socketId, &buf[0], readCount, 0) == SOCKET_ERROR)
+                throw MyException(CallType::WSA, "send in HandleGetHead (GET)", false, socketId);
+            total += readCount;
+            cout << socketId << " Sent a total of " << total << " bytes" << endl;
         }
         response.manuallySent = true;
     }
@@ -283,7 +305,7 @@ bool MySocket::CheckPath()
     bool isInWebRoot;
     entityFullPath = CanonicalRequestedPath(isInWebRoot);
 
-    cout << "Request canonical path: " << entityFullPath << endl;
+    cout << socketId << " Request canonical path: " << entityFullPath << endl;
     if(!isInWebRoot) {
         response.code = 403;
         response.responseText = "Forbidden";
@@ -311,17 +333,20 @@ bool MySocket::CheckPath()
 
 void MySocket::Send()
 {
+    lastSendOrReceive = time(NULL);
+
     response.Clear();
-    if(!request.done) {
+    cout << socketId << " processing " << requestQueue.front().method << " " << requestQueue.front().url << endl;
+    if(!requestQueue.front().done) {
         HandleBadRequest();
     }
-    else if(request.method == "TRACE") {
+    else if(requestQueue.front().method == "TRACE") {
         HandleTrace();
     }
-    else if(request.method == "DELETE") {
+    else if(requestQueue.front().method == "DELETE") {
         HandleDelete();
     }
-    else if(request.method == "PUT") {
+    else if(requestQueue.front().method == "PUT") {
         HandlePut();
     }
     else { // GET or HEAD
@@ -329,7 +354,13 @@ void MySocket::Send()
     }
     if(!response.manuallySent)
         SendString(response.GetResponseText().c_str());
-    MarkForDeletion(this);
+    bool keepAlive = requestQueue.front().keepAlive;
+    requestQueue.pop();
+    if(!keepAlive)
+        MarkForDeletion(this);
+    else if(requestQueue.empty())
+        state = SocketState::REQUEST;
+    //MarkForDeletion(this);
 }
 
 void MySocket::PrintStatus()
