@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
     // This is just for testing purposes.
     cout << "Normal exit" << endl;
 cleanup:
-    MySocket::DeleteAll();
+    MySocket::DeleteAll(); // The listener is also deleted here, so no leaks here either.
     Cleanup();
 
     return applicationExitCode;
