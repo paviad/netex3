@@ -39,7 +39,7 @@ MySocket::~MySocket(void)
     sockets.erase(this);
     try { Clear(); }
     catch(MyException myEx) {
-        cerr << "MySocket destructor threw exception: " << myEx.contextMsg << " - " << myEx.errorMsg << endl;
+        cout << "MySocket destructor threw exception: " << myEx.contextMsg << " - " << myEx.errorMsg << endl;
     }
     catch(...) { }
 }
@@ -240,6 +240,11 @@ void MySocket::HandlePut()
     if(!entityFileExists) {
         response.code = 201;
         response.responseText = "Created";
+        char tmp[50];
+        response.content = "<h1>File created with content length: ";
+        response.content += itoa(requestQueue.front().contentLength, tmp, 10);
+        response.content += "</ht>";
+        response.contentLength = response.content.length();
     }
     else {
         response.code = 204;
@@ -279,7 +284,6 @@ void MySocket::HandleGetHead()
         //cout << response.GetResponseHeader() << endl;
 
         SendString(response.GetResponseHeader().c_str());
-        SendString("\r\n");
 
         if(requestQueue.front().method == "GET") {
             int readCount, total = 0;

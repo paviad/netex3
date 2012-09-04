@@ -46,13 +46,14 @@ public:
 
         //rc.append("Connection: close\r\n");
         rc.append("Connection: Keep-Alive\r\n");
-        sprintf(headerTmp, "Content-Length: %I64d\r\n", contentLength);
-        rc.append(headerTmp);
         if(contentLength > 0) {
+            sprintf(headerTmp, "Content-Length: %I64d\r\n", contentLength);
+            rc.append(headerTmp);
             rc.append("Content-Type: ");
             rc.append(contentType);
             rc.append("\r\n");
         }
+        rc.append("\r\n");
         return rc;
     }
 
@@ -60,7 +61,6 @@ public:
         string rc = GetResponseHeader();
 
         if(contentLength > 0) {
-            rc.append("\r\n");
             rc.append(content.c_str());
         }
 

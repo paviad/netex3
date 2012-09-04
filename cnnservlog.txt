@@ -1,0 +1,282 @@
+132 Listening on 0.0.0.0:27015
+Total sockets: 1
+Waiting indefinitely (no clients)
+136 Client 127.0.0.1:51789 is connected.
+Total sockets: 2
+Will timeout a client in 120 seconds.
+Total sockets: 2
+Will timeout a client in 120 seconds.
+136 processing GET /cnn.htm
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn.htm
+136 Sent a total of 115912 bytes
+Total sockets: 2
+Will timeout a client in 120 seconds.
+Total sockets: 2
+Will timeout a client in 120 seconds.
+140 Client 127.0.0.1:51790 is connected.
+136 processing GET /cnn_files/intlhplib-min.css
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\intlhplib-min.css
+136 Sent a total of 175854 bytes
+Total sockets: 3
+Will timeout a client in 120 seconds.
+148 Client 127.0.0.1:51791 is connected.
+Total sockets: 4
+Will timeout a client in 120 seconds.
+152 Client 127.0.0.1:51792 is connected.
+140 processing GET /cnn_files/widgets.js
+140 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\widgets.js
+140 Sent a total of 76888 bytes
+Total sockets: 5
+Will timeout a client in 120 seconds.
+156 Client 127.0.0.1:51793 is connected.
+148 processing GET /cnn_files/intlhplib-min.js
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\intlhplib-min.js
+148 Sent a total of 621100 bytes
+136 processing GET /cnn_files/xd.js
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\xd.js
+136 Sent a total of 329 bytes
+Total sockets: 6
+Will timeout a client in 120 seconds.
+160 Client 127.0.0.1:51794 is connected.
+152 processing GET /cnn_files/all.js
+152 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\all.js
+152 Sent a total of 187014 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+156 processing GET /cnn_files/globallib.js
+156 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\globallib.js
+156 Sent a total of 155496 bytes
+140 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_positionBG.js
+140 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_positionBG.js
+140 Sent a total of 19 bytes
+136 processing GET /cnn_files/chartbeat.js
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\chartbeat.js
+136 Sent a total of 6824 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+160 processing GET /cnn_files/1_002.gif
+160 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\1_002.gif
+160 Sent a total of 43 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+Total sockets: 7
+Will timeout a client in 119 seconds.
+148 processing GET /cnn_files/xd_arbiter.htm
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\xd_arbiter.htm
+148 Sent a total of 25906 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+160 processing GET /cnn_files/btn_search_hp_text.gif
+160 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\btn_search_hp_text.gif
+160 Sent a total of 858 bytes
+156 processing GET /cnn_files/1px_002.gif
+156 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\1px_002.gif
+156 Sent a total of 43 bytes
+140 processing GET /cnn_files/hdr-globe-central.gif
+140 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\hdr-globe-central.gif
+140 Sent a total of 4547 bytes
+136 processing GET /cnn_files/arrow_black.png
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\arrow_black.png
+136 Sent a total of 679 bytes
+152 processing GET /cnn_files/xd_arbiter_002.htm
+152 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\xd_arbiter_002.htm
+152 Sent a total of 25906 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+Total sockets: 7
+Will timeout a client in 120 seconds.
+160 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position9.htm
+160 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position9.htm
+160 Sent a total of 1760 bytes
+156 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position3.htm
+156 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position3.htm
+156 Sent a total of 8135 bytes
+148 processing GET /.element/ssi/intl/breaking_news/3.0/banner.html?csiID=csi1
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\.element\ssi\intl\breaking_news\3.0\banner.html?csiID=csi1
+148 404 Not Found
+140 processing GET /cnn_files/like.htm
+140 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\like.htm
+140 Sent a total of 11567 bytes
+136 processing GET /cnn_files/follow_button.htm
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\follow_button.htm
+136 Sent a total of 70139 bytes
+152 processing GET /cnn_files/sitecnn_internationalcnn_intl_position88x31_spon_worldbizcnn.htm
+152 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_position88x31_spon_worldbizcnn.htm
+152 Sent a total of 113 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+Total sockets: 7
+Will timeout a client in 120 seconds.
+160 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position1.htm
+160 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position1.htm
+160 Sent a total of 7975 bytes
+156 processing GET /cnn_files/sitecnn_internationalcnn_intl_position88x31_spon_dailysnapcn.htm
+156 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_position88x31_spon_dailysnapcn.htm
+156 Sent a total of 2597 bytes
+148 processing GET /cnn_files/sitecnn_internationalcnn_intl_position88x31_spon_greenweekcn.htm
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_position88x31_spon_greenweekcn.htm
+148 Sent a total of 113 bytes
+140 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position7.htm
+140 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position7.htm
+140 Sent a total of 8068 bytes
+136 processing GET /cnn_files/120904010328-unconventional-dnc-18-t1-main.jpg
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\120904010328-unconventional-dnc-18-t1-main.jpg
+136 Sent a total of 45082 bytes
+152 processing GET /cnn_files/video_icon.gif
+152 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\video_icon.gif
+152 Sent a total of 138 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+Total sockets: 7
+Will timeout a client in 120 seconds.
+160 processing GET /cnn_files/1px.gif
+160 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\1px.gif
+160 Sent a total of 43 bytes
+156 processing GET /cnn_files/120904052622-syria-exclusive-bug-woman-c1-main.jpg
+156 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\120904052622-syria-exclusive-bug-woman-c1-main.jpg
+156 Sent a total of 35139 bytes
+148 processing GET /cnn_files/120903023336-obama-speaks-boulder-wall-4-tease.jpg
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\120903023336-obama-speaks-boulder-wall-4-tease.jpg
+148 Sent a total of 6634 bytes
+140 processing GET /cnn_files/120903044145-midwest-drought-video-tease.jpg
+140 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\120903044145-midwest-drought-video-tease.jpg
+140 Sent a total of 4931 bytes
+136 processing GET /cnn_files/120829055722-global-office-toys-spocks-video-tease.jpg
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\120829055722-global-office-toys-spocks-video-tease.jpg
+136 Sent a total of 4832 bytes
+152 processing GET /cnn_files/120903102319-michael-clarke-duncan-relativity-media-video-te.jpg
+152 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\120903102319-michael-clarke-duncan-relativity-media-video-te.jpg
+152 Sent a total of 4501 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+Total sockets: 7
+Will timeout a client in 120 seconds.
+160 processing GET /cnn_files/getForecast.htm
+160 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\getForecast.htm
+160 Sent a total of 17133 bytes
+156 processing GET /cnn_files/getForecast_002.htm
+156 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\getForecast_002.htm
+156 Sent a total of 17133 bytes
+148 processing GET /cnn_files/120904013119-intv-mclaughlin-paralympic-tennis-player-esther.jpg
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\120904013119-intv-mclaughlin-paralympic-tennis-player-esther.jpg
+148 Sent a total of 5193 bytes
+140 processing GET /cnn_files/120903030639-bruce-willis-cannes-video-tease.jpg
+140 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\120903030639-bruce-willis-cannes-video-tease.jpg
+140 Sent a total of 5107 bytes
+136 processing GET /cnn_files/120903015341-marketplace-africa-dreamliner-ethiopian-airline.jpg
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\120903015341-marketplace-africa-dreamliner-ethiopian-airline.jpg
+136 Sent a total of 4486 bytes
+152 processing GET /cnn_files/advertisement_002.gif
+152 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\advertisement_002.gif
+152 Sent a total of 94 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+Total sockets: 7
+Will timeout a client in 120 seconds.
+160 processing GET /cnn_files/01.png
+160 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\01.png
+160 Sent a total of 1181 bytes
+156 processing GET /cnn_files/loading.gif
+156 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\loading.gif
+156 Sent a total of 3802 bytes
+148 processing GET /cnn_files/advertisement.gif
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\advertisement.gif
+148 Sent a total of 94 bytes
+140 processing GET /cnn_files/120903124856-moscow-fireworks-bin-tease.jpg
+140 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\120903124856-moscow-fireworks-bin-tease.jpg
+140 Sent a total of 15727 bytes
+136 processing GET /cnn_files/americas_choice2012.jpg
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\americas_choice2012.jpg
+136 Sent a total of 5520 bytes
+152 processing GET /cnn_files/search_btn_footer.gif
+152 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\search_btn_footer.gif
+152 Sent a total of 889 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+Total sockets: 7
+Will timeout a client in 120 seconds.
+160 processing GET /cnn_files/footer_google.png
+160 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\footer_google.png
+160 Sent a total of 1427 bytes
+156 processing GET /cnn_files/footer_cnn_logo.png
+156 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\footer_cnn_logo.png
+156 Sent a total of 475 bytes
+148 processing GET /cnn_files/logo_ad_choices_footer.png
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\logo_ad_choices_footer.png
+148 Sent a total of 585 bytes
+140 processing GET /cnn_files/1.gif
+140 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\1.gif
+140 Sent a total of 43 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+Total sockets: 7
+Will timeout a client in 119 seconds.
+148 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position970x6/TypecountClientType2ASegAModAOpt0AdID633057FlightID465554Tar.gif
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position970x6\TypecountClientType2ASegAModAOpt0AdID633057FlightID465554Tar.gif
+148 Sent a total of 43 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+160 processing GET /cnn_files/follow_button_data/jot.gif
+160 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\follow_button_data\jot.gif
+160 Sent a total of 43 bytes
+156 processing GET /cnn_files/follow_button_data/exists.json
+156 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\follow_button_data\exists.json
+156 Sent a total of 32 bytes
+140 processing GET /cnn_files/follow_button_data/f.gif
+140 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\follow_button_data\f.gif
+140 Sent a total of 43 bytes
+136 processing GET /cnn_files/follow_button_data/show.json
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\follow_button_data\show.json
+136 Sent a total of 2024 bytes
+152 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position300x2/TypecountClientType2ASegAModAOpt0AdID662680FlightID488817Tar.gif
+152 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position300x2\TypecountClientType2ASegAModAOpt0AdID662680FlightID488817Tar.gif
+152 Sent a total of 43 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+148 processing GET /cnn_files/getForecast_data/csi_include.js
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\getForecast_data\csi_include.js
+148 Sent a total of 1907 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+160 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position728x9/311613728x90_international2.swf
+160 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position728x9\311613728x90_international2.swf
+160 Sent a total of 37178 bytes
+156 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position120x9/46810jhr_120x90.swf
+156 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position120x9\46810jhr_120x90.swf
+156 Sent a total of 34511 bytes
+140 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position300x2/31616300x250_Opinion.swf
+140 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position300x2\31616300x250_Opinion.swf
+140 Sent a total of 8737 bytes
+136 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position120x9/TypecountClientType2ASegAModAOpt0AdID637474FlightID469079Tar.gif
+136 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position120x9\TypecountClientType2ASegAModAOpt0AdID637474FlightID469079Tar.gif
+136 Sent a total of 43 bytes
+152 processing GET /cnn_files/sitecnn_internationalcnn_intl_position88x31_spon_dailysnapcnn_in/3512Nikon175x31_gray.gif
+152 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_position88x31_spon_dailysnapcnn_in\3512Nikon175x31_gray.gif
+152 Sent a total of 3267 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+148 processing GET /cnn_files/sitecnn_internationalcnn_intl_position88x31_spon_dailysnapcnn_in/TypecountClientType2ASegAModAOpt0AdID633176FlightID465827Tar.gif
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_position88x31_spon_dailysnapcnn_in\TypecountClientType2ASegAModAOpt0AdID633176FlightID465827Tar.gif
+148 Sent a total of 43 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+160 processing GET /cnn_files/getForecast_data/csi_include.js
+160 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\getForecast_data\csi_include.js
+160 Sent a total of 1907 bytes
+156 processing GET /cnn_files/sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position728x9/TypecountClientType2ASegAModAOpt0AdID638554FlightID469737Tar.gif
+156 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\cnn_files\sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position728x9\TypecountClientType2ASegAModAOpt0AdID638554FlightID469737Tar.gif
+156 Sent a total of 43 bytes
+Total sockets: 7
+Will timeout a client in 120 seconds.
+Total sockets: 7
+Will timeout a client in 120 seconds.
+148 processing GET /.element/ssi/www/breaking_news/3.0/banner.html
+148 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\.element\ssi\www\breaking_news\3.0\banner.html
+148 404 Not Found
+Total sockets: 7
+Will timeout a client in 120 seconds.
+152 processing GET /.element/ssi/misc/3.0/editionvars.html?csiID=csi2
+152 Request canonical path: C:\MyProjects\NetworkEx3\NetworkEx3\wwwroot\.element\ssi\misc\3.0\editionvars.html?csiID=csi2
+152 404 Not Found
+Total sockets: 7
+Will timeout a client in 120 seconds.

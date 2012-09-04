@@ -3,6 +3,9 @@
 #include <iostream>
 #include <string>
 
+#define SERVER_IP "127.0.0.1"
+#define SERVER_PORT 27015
+
 using namespace std;
 
 SOCKET s;
@@ -32,8 +35,8 @@ bool PerformTest(string testName, string request, string expected)
 
     sockaddr_in addr;
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    addr.sin_port = htons(27015);
+    addr.sin_addr.s_addr = inet_addr(SERVER_IP);
+    addr.sin_port = htons(SERVER_PORT);
     connect(s, (sockaddr*)&addr, sizeof(addr));
 
     string response;
@@ -197,10 +200,18 @@ bool Test18()
 
 bool Test19()
 {
-    string request = "GET /ex03.doc HTTP/1.1\r\n\r\n";
+    string request = "HEAD /ex03.doc HTTP/1.1\r\n\r\n";
     string expected = "HTTP/1.1 200 OK\r\n";
     
     return PerformTest("Test19", request, expected);
+}
+
+bool Test20()
+{
+    string request = "GET /ex03.doc HTTP/1.1\r\n\r\n";
+    string expected = "HTTP/1.1 200 OK\r\n";
+    
+    return PerformTest("Test20", request, expected);
 }
 
 int main(int argc, char *argv[])
@@ -229,6 +240,7 @@ int main(int argc, char *argv[])
     testsOk &= Test17();
     testsOk &= Test18();
     testsOk &= Test19();
+    testsOk &= Test20();
 
     WSACleanup();
 

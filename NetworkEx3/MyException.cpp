@@ -49,6 +49,6 @@ void MyException::FillWSAErrorMessage()
 void MyException::Print()
 {
     Highlight(2);
-    cerr << id << " Error: " << contextMsg << " - " << errorMsg << endl;
+    cout << id << " Error: " << contextMsg << " - " << errorMsg << endl;
     Highlight(0);
 }
