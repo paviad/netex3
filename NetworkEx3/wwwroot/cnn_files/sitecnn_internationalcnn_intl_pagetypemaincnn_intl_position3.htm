@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<script>
+        function cnnad_getTld (hostname)
+        {
+               var data = hostname.split(".");
+               if (data.length >= 2)
+               {
+                       return (data[data.length-2] + "." + data[data.length-1]);
+               }
+               return(null);
+        }
+ 
+        var cnnDocDomain = cnnad_getTld(location.hostname);
+        if(cnnDocDomain) {document.domain = cnnDocDomain;}
+
+	function cnnGetId(query) {
+		var keyValPairs = query.split('&');
+		if(!keyValPairs) {
+			keyValPairs = new Array();
+			keyValPairs[keyValPairs.length]=query;
+		}
+		for(var counter=0; counter < keyValPairs.length;counter++) {
+			var keyVal = keyValPairs[counter].split('=');
+			if(keyVal[0]=='domId') {
+				//alert("returning id: " + keyVal[1]);
+				return keyVal[1];
+			}
+		}
+	}
+			
+	function cnnSendData2() {
+		var docId = cnnGetId(decodeURIComponent(location.pathname.substring(9)));
+		var height = 250;
+		var width = 300;
+		var targetWindow = top;
+		try
+		{
+			if(parent.cnnad_showAd)
+			{
+				targetWindow = parent;
+			}
+		} catch(err) {} 
+		targetWindow.cnnad_showAd(docId);
+		if ((height > 0)&&(width > 0))
+		{
+			targetWindow.cnnad_setAdSize(docId,height,width);
+		}
+	}
+</script> 
+</head>
+
+<body style="background-color:transparent" onload="cnnSendData2()">
+<!--FlightID: 488817-->
+<script language="JavaScript">
+
+var swf_click = "http://ads.cnn.com/event.ng/Type=click&FlightID=488817&AdID=662680&TargetID=79999&Segments=690,2168,2248,11464,14108,20226,23491,29397,29705,30338,30546,33448,36482,36483,37854,40223,42804,46694,48402,48409,54897,55168,59955,61118,61565,61742,61997,63997,64000,64158,64159,64384,64667,64734,64954,65021,65219,65265,65306&Values=1590&Redirect=https://www.cnnglobalnewsview.com/R.aspx?a=42";
+var dcswf_click = escape(swf_click);
+
+var ShockMode = 0;
+var plugin = (navigator.mimeTypes && navigator.mimeTypes["application/x-shockwave-flash"]) ? navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin : 0;
+if (plugin && parseInt(plugin.description.substring(plugin.description.indexOf(".")-2)) >= 10) 
+{
+ShockMode = 1;
+}
+else if (navigator.userAgent && navigator.userAgent.indexOf("MSIE")>=0 
+&& (navigator.userAgent.indexOf("Windows 95")>=0 || navigator.userAgent.indexOf("Windows 98")>=0 || navigator.userAgent.indexOf("Windows NT")>=0)) {
+document.write('<SCRIPT LANGUAGE=VBScript\> \n');
+document.write('on error resume next \n');
+
+document.write('ShockMode = (IsObject(CreateObject("ShockwaveFlash.ShockwaveFlash.10")))\n');
+
+document.write('<\/SCRIPT\> \n');
+}
+if ( ShockMode ) {
+document.write('<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"');
+document.write(' codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0"');
+document.write(' ID=flashad WIDTH=300 HEIGHT=250>');
+document.write(' <PARAM NAME=movie VALUE="http://i.cdn.turner.com/cnn/cnnintl_adspaces/2.0/creatives/2012/1/13/31616300x250_Opinion.swf"> '); 
+document.write(' <PARAM NAME=FlashVars VALUE="clickTAG='+dcswf_click+'"> '); 
+document.write(' <PARAM NAME=quality VALUE=autohigh> ');
+document.write(' <PARAM NAME=allowScriptAccess VALUE=always> '); 
+
+document.write(' <param name=wmode value=opaque> ');
+
+document.write(' <EMBED SRC="http://i.cdn.turner.com/cnn/cnnintl_adspaces/2.0/creatives/2012/1/13/31616300x250_Opinion.swf" FlashVars="clickTAG='+dcswf_click+'" QUALITY=autohigh allowScriptAccess=always'); 
+document.write(' NAME=flashad swLiveConnect=TRUE WIDTH=300 HEIGHT=250 wmode=opaque');
+
+
+document.write(' TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">');
+document.write('</EMBED>');
+document.write('</OBJECT>');
+} else if (!(navigator.appName && navigator.appName.indexOf("Netscape")>=0 && navigator.appVersion.indexOf("2.")>=0)){
+document.write('<A HREF="http://ads.cnn.com/event.ng/Type=click&FlightID=488817&AdID=662680&TargetID=79999&Segments=690,2168,2248,11464,14108,20226,23491,29397,29705,30338,30546,33448,36482,36483,37854,40223,42804,46694,48402,48409,54897,55168,59955,61118,61565,61742,61997,63997,64000,64158,64159,64384,64667,64734,64954,65021,65219,65265,65306&Targets=104239,89913,95059,79999,95304,89659,90997,153446,93785,120139,149178,145818,149180,155995&Values=60,82,100,150,683,685,687,799,1289,1575,1590,1815,2757,2774,4430,48213,52263,52900,56058,57005,57006,58570,58702,59884,59988,61089,61263,61908,122427&RawValues=NGUSERID%252C501f70a80760160aa514740b57001116%252CTID%252C1323220847168900%252CTIL%252C5529767376435&Redirect=https://www.cnnglobalnewsview.com/R.aspx?a=42" target="_blank"><IMG SRC="http://i.cdn.turner.com/cnn/cnnintl_adspaces/2.0/creatives/2012/1/13/55616300x250_Opinion.gif" WIDTH=300 HEIGHT=250 BORDER=0></A>');
+}
+
+</script><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0" id="flashad" height="250" width="300"> <param name="movie" value="http://i.cdn.turner.com/cnn/cnnintl_adspaces/2.0/creatives/2012/1/13/31616300x250_Opinion.swf">  <param name="FlashVars" value="clickTAG=http%3A//ads.cnn.com/event.ng/Type%3Dclick%26FlightID%3D488817%26AdID%3D662680%26TargetID%3D79999%26Segments%3D690%2C2168%2C2248%2C11464%2C14108%2C20226%2C23491%2C29397%2C29705%2C30338%2C30546%2C33448%2C36482%2C36483%2C37854%2C40223%2C42804%2C46694%2C48402%2C48409%2C54897%2C55168%2C59955%2C61118%2C61565%2C61742%2C61997%2C63997%2C64000%2C64158%2C64159%2C64384%2C64667%2C64734%2C64954%2C65021%2C65219%2C65265%2C65306%26Values%3D1590%26Redirect%3Dhttps%3A//www.cnnglobalnewsview.com/R.aspx%3Fa%3D42">  <param name="quality" value="autohigh">  <param name="allowScriptAccess" value="always">  <param name="wmode" value="opaque">  <embed src="sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position300x2/31616300x250_Opinion.swf" flashvars="clickTAG=http%3A//ads.cnn.com/event.ng/Type%3Dclick%26FlightID%3D488817%26AdID%3D662680%26TargetID%3D79999%26Segments%3D690%2C2168%2C2248%2C11464%2C14108%2C20226%2C23491%2C29397%2C29705%2C30338%2C30546%2C33448%2C36482%2C36483%2C37854%2C40223%2C42804%2C46694%2C48402%2C48409%2C54897%2C55168%2C59955%2C61118%2C61565%2C61742%2C61997%2C63997%2C64000%2C64158%2C64159%2C64384%2C64667%2C64734%2C64954%2C65021%2C65219%2C65265%2C65306%26Values%3D1590%26Redirect%3Dhttps%3A//www.cnnglobalnewsview.com/R.aspx%3Fa%3D42" quality="autohigh" allowscriptaccess="always" name="flashad" swliveconnect="TRUE" wmode="opaque" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" height="250" width="300"></object>
+<noembed>
+&lt;A 
+HREF="http://ads.cnn.com/event.ng/Type=click&amp;FlightID=488817&amp;AdID=662680&amp;TargetID=79999&amp;Segments=690,2168,2248,11464,14108,20226,23491,29397,29705,30338,30546,33448,36482,36483,37854,40223,42804,46694,48402,48409,54897,55168,59955,61118,61565,61742,61997,63997,64000,64158,64159,64384,64667,64734,64954,65021,65219,65265,65306&amp;Targets=104239,89913,95059,79999,95304,89659,90997,153446,93785,120139,149178,145818,149180,155995&amp;Values=60,82,100,150,683,685,687,799,1289,1575,1590,1815,2757,2774,4430,48213,52263,52900,56058,57005,57006,58570,58702,59884,59988,61089,61263,61908,122427&amp;RawValues=NGUSERID%252C501f70a80760160aa514740b57001116%252CTID%252C1323220847168900%252CTIL%252C5529767376435&amp;Redirect=https://www.cnnglobalnewsview.com/R.aspx?a=42"
+ target="_blank"&gt;&lt;IMG 
+SRC="http://i.cdn.turner.com/cnn/cnnintl_adspaces/2.0/creatives/2012/1/13/55616300x250_Opinion.gif"
+ WIDTH=300 HEIGHT=250 BORDER=0&gt;&lt;/A&gt;
+</noembed>
+<div style="position:absolute;visibility:hidden;"><img src="sitecnn_internationalcnn_intl_pagetypemaincnn_intl_position300x2/TypecountClientType2ASegAModAOpt0AdID662680FlightID488817Tar.gif" border="0" height="1" width="1"></div>
+
+</body></html>

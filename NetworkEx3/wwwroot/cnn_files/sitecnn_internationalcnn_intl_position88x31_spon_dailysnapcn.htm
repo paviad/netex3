@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<script>
+        function cnnad_getTld (hostname)
+        {
+               var data = hostname.split(".");
+               if (data.length >= 2)
+               {
+                       return (data[data.length-2] + "." + data[data.length-1]);
+               }
+               return(null);
+        }
+ 
+        var cnnDocDomain = cnnad_getTld(location.hostname);
+        if(cnnDocDomain) {document.domain = cnnDocDomain;}
+
+	function cnnGetId(query) {
+		var keyValPairs = query.split('&');
+		if(!keyValPairs) {
+			keyValPairs = new Array();
+			keyValPairs[keyValPairs.length]=query;
+		}
+		for(var counter=0; counter < keyValPairs.length;counter++) {
+			var keyVal = keyValPairs[counter].split('=');
+			if(keyVal[0]=='domId') {
+				//alert("returning id: " + keyVal[1]);
+				return keyVal[1];
+			}
+		}
+	}
+			
+	function cnnSendData2() {
+		var docId = cnnGetId(decodeURIComponent(location.pathname.substring(9)));
+		var height = 31;
+		var width = 175;
+		var targetWindow = top;
+		try
+		{
+			if(parent.cnnad_showAd)
+			{
+				targetWindow = parent;
+			}
+		} catch(err) {} 
+		targetWindow.cnnad_showAd(docId);
+		if ((height > 0)&&(width > 0))
+		{
+			targetWindow.cnnad_setAdSize(docId,height,width);
+		}
+	}
+</script> 
+</head>
+
+<body style="background-color:transparent" onload="cnnSendData2()">
+<!--FlightID: 465827-->
+<a target="_blank" href="http://ads.cnn.com/event.ng/Type=click&amp;FlightID=465827&amp;AdID=633176&amp;TargetID=15224&amp;Segments=690,2168,2248,9345,11464,14108,20226,23491,29397,30338,30375,33448,36482,36483,40223,42804,46694,48402,54897,55168,59955,61118,61565,61742,61997,64000,64158,64159,64384,64667,64954,65021,65219,65265,65306&amp;Targets=15224&amp;Values=60,82,100,150,683,685,687,799,1289,1575,1590,1815,2757,4430,48213,52263,52612,52900,56058,57005,57006,58570,58702,59988,61089,61263,61908,122427&amp;RawValues=NGUSERID%252C501f70a80760160aa514740b57001116%252CTID%252C1323220847168900%252CTIL%252C5529767376431&amp;Redirect=http://imaging.nikon.com/products/imaging/index.htm"><img src="sitecnn_internationalcnn_intl_position88x31_spon_dailysnapcnn_in/3512Nikon175x31_gray.gif" border="0" height="31" width="175"></a>
+<div style="position:absolute;visibility:hidden;"><img src="sitecnn_internationalcnn_intl_position88x31_spon_dailysnapcnn_in/TypecountClientType2ASegAModAOpt0AdID633176FlightID465827Tar.gif" border="0" height="1" width="1"></div>
+
+</body></html>

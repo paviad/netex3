@@ -199,10 +199,6 @@ void MySocket::HandleBadRequest()
     }
     else content = "<h1>Bad Request (Malformed Request)</h1>";
 
-    Highlight(1);
-    cout << socketId << " Bad request: " << response.responseText << endl;
-    Highlight(0);
-
     response.content = content;
     response.contentLength = content.length();
 }
@@ -352,8 +348,14 @@ void MySocket::Send()
     else { // GET or HEAD
         HandleGetHead();
     }
-    if(!response.manuallySent)
+    if(!response.manuallySent) {
+        if(response.code / 100 != 2) { // Any non 2XX response gets printed in warning highlight.
+            Highlight(1);
+            cout << socketId << " " << response.code << " " << response.responseText << endl;
+            Highlight(0);
+        }
         SendString(response.GetResponseText().c_str());
+    }
     bool keepAlive = requestQueue.front().keepAlive;
     requestQueue.pop();
     if(!keepAlive)
